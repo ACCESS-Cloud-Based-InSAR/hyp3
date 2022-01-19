@@ -7,7 +7,9 @@ Parameters:
 
   PermissionsBoundaryPolicyArn:
     Type: String
-    Default: ""
+
+  DistributionDomainName:
+    Type: String
 
   SecurityGroupId:
     Type: String
@@ -72,6 +74,7 @@ Resources:
       Environment:
         Variables:
           BUCKET: !Ref Bucket
+          DISTRIBUTION_DOMAIN_NAME: !Ref DistributionDomainName
       Code: src/
       Handler: get_files.lambda_handler
       MemorySize: 128

@@ -27,6 +27,9 @@ Parameters:
   PermissionsBoundaryPolicyArn:
     Type: String
 
+  DistributionDomainName:
+    Type: String
+
   SecurityGroupId:
     Type: String
 
@@ -138,6 +141,7 @@ Resources:
       Parameters:
         Bucket: !Ref Bucket
         PermissionsBoundaryPolicyArn: !Ref PermissionsBoundaryPolicyArn
+        DistributionDomainName: !Ref DistributionDomainName
         SecurityGroupId: !Ref SecurityGroupId
         SubnetIds: !Join [',', !Ref SubnetIds]
       TemplateURL: get-files/get-files-cf.yml

@@ -9,9 +9,13 @@ import boto3
 S3_CLIENT = boto3.client('s3')
 
 
-def get_download_url(bucket, key):
-    region = environ['AWS_REGION']
-    return f'https://{bucket}.s3.{region}.amazonaws.com/{key}'
+def get_download_url(bucket, key, distribution_domain_name):
+    if distribution_domain_name:
+        download_url = f'https://{distribution_domain_name}/{key}'
+    else:
+        region = environ['AWS_REGION']
+        download_url = f'https://{bucket}.s3.{region}.amazonaws.com/{key}'
+    return download_url
 
 
 def get_expiration_time(bucket, key):
@@ -49,11 +53,11 @@ def get_file_urls_by_type(file_list, file_type):
     return urls
 
 
-def organize_files(files_dict, bucket):
+def organize_files(files_dict, bucket, distribution_domain_name):
     all_files = []
     expiration = None
     for item in files_dict:
-        download_url = get_download_url(bucket, item['Key'])
+        download_url = get_download_url(bucket, item['Key'], distribution_domain_name)
         file_type = get_object_file_type(bucket, item['Key'])
         all_files.append({
             'download_url': download_url,
@@ -79,6 +83,7 @@ def organize_files(files_dict, bucket):
 
 def lambda_handler(event, context):
     bucket = environ['BUCKET']
+    distribution_domain_name = environ['DISTRIBUTION_DOMAIN_NAME']
 
     response = S3_CLIENT.list_objects_v2(Bucket=bucket, Prefix=event['job_id'])
-    return organize_files(response['Contents'], bucket)
+    return organize_files(response['Contents'], bucket, distribution_domain_name)

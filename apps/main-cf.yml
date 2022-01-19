@@ -74,6 +74,11 @@ Parameters:
     Type: String
     Default: ""
 
+  DistributionDomainName:
+    Description: Domain name for product download URLs for Earthdata Cloud deployements, e.g. d111111abcdef8.cloudfront.net
+    Type: String
+    Default: ""
+
   EarthdataCloud:
     Type: String
     Default: false
@@ -195,6 +200,7 @@ Resources:
         Bucket: !Ref ContentBucket
         ImageTag: !Ref ImageTag
         PermissionsBoundaryPolicyArn: !Ref PermissionsBoundaryPolicyArn
+        DistributionDomainName: !Ref DistributionDomainName
         SecurityGroupId: !If [LambdasInVpc, !GetAtt Cluster.Outputs.SecurityGroupId, ""]
         SubnetIds: !If [LambdasInVpc, !Join [',', !Ref SubnetIds], ""]
       TemplateURL: workflow-cf.yml
